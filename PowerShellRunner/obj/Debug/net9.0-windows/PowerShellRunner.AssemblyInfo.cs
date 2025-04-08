@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PowerShellRunner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4fdb772377a4d5408acff7ef4e52e3039b4d60fa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85c0edef0a803dbbb3ae9ce62b0ee0472ca3c813")]
 [assembly: System.Reflection.AssemblyProductAttribute("PowerShellRunner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PowerShellRunner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
