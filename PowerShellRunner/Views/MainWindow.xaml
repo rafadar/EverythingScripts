@@ -17,13 +17,12 @@
             <ComboBox ItemsSource="{Binding Scripts}" 
                       SelectedItem="{Binding SelectedScript}" 
                       Width="200" 
-                      Margin="0,0,10,0" 
-                      PlaceholderText="Select Script"/>
+                      Margin="0,0,10,0" />
             <ComboBox ItemsSource="{Binding Tenants}" 
                       SelectedItem="{Binding SelectedTenant}" 
+                      DisplayMemberPath="TenantName" 
                       Width="200" 
-                      Margin="0,0,10,0" 
-                      PlaceholderText="Select Tenant"/>
+                      Margin="0,0,10,0" />
             <Button Content="Load Parameters" Command="{Binding LoadParametersCommand}" />
         </StackPanel>
 

@@ -4,13 +4,18 @@ using System.Linq;
 using System.Windows.Input;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using ParameterModel = PowerShellRunner.Models.ParameterModel;
+using System.ComponentModel;
+using PowerShellRunner.Utilities;
+using PowerShellRunner.Models;
+using System;
 
 namespace PowerShellRunner.ViewModels
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private string _selectedScript;
-        private string _selectedTenant;
+        private TenantConfigModel _selectedTenant;
         private ObservableCollection<ParameterModel> _parameters;
         private string _executionOutput;
 
@@ -21,11 +26,10 @@ namespace PowerShellRunner.ViewModels
             {
                 _selectedScript = value;
                 OnPropertyChanged();
-                LoadParameters();
             }
         }
 
-        public string SelectedTenant
+        public TenantConfigModel SelectedTenant
         {
             get => _selectedTenant;
             set
@@ -56,12 +60,21 @@ namespace PowerShellRunner.ViewModels
             }
         }
 
+        public ObservableCollection<TenantConfigModel> Tenants { get; set; }
+
         public ICommand ExecuteScriptCommand { get; }
 
         public MainWindowViewModel()
         {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var baseDirectory = Path.Combine(documentsPath, "PowerShellRunner");
+
+            Directory.CreateDirectory(Path.Combine(baseDirectory, "Tenants"));
+            Directory.CreateDirectory(Path.Combine(baseDirectory, "Scripts"));
+
             Parameters = new ObservableCollection<ParameterModel>();
             ExecuteScriptCommand = new RelayCommand(ExecuteScript);
+            LoadTenants();
         }
 
         private void LoadParameters()
@@ -70,17 +83,44 @@ namespace PowerShellRunner.ViewModels
             // This is a placeholder for actual implementation
         }
 
+        private void LoadTenants()
+        {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var tenantsDirectory = Path.Combine(documentsPath, "PowerShellRunner", "Tenants");
+
+            if (!Directory.Exists(tenantsDirectory))
+            {
+                Directory.CreateDirectory(tenantsDirectory); // Create the directory if it doesn't exist
+                Tenants = new ObservableCollection<TenantConfigModel>(); // Initialize an empty collection
+                return;
+            }
+
+            var tenantFiles = Directory.GetFiles(tenantsDirectory, "*.config.json");
+            Tenants = new ObservableCollection<TenantConfigModel>(
+                tenantFiles.Select(file => JsonConvert.DeserializeObject<TenantConfigModel>(File.ReadAllText(file))));
+        }
+
         private void LoadTenantConfig()
         {
-            // Load tenant configuration and map parameters if map.json exists
-            // This is a placeholder for actual implementation
+            if (SelectedTenant != null)
+            {
+                Parameters = SelectedTenant != null ? new ObservableCollection<ParameterModel>(SelectedTenant.Parameters) : new ObservableCollection<ParameterModel>();
+            }
         }
 
         private void ExecuteScript()
         {
-            // Execute the PowerShell script and capture output
-            var scriptPath = Path.Combine("Scripts", "ScriptName", SelectedScript);
-            var tenantConfigPath = Path.Combine("Tenants", SelectedTenant);
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var scriptsDirectory = Path.Combine(documentsPath, "PowerShellRunner", "Scripts");
+            var scriptPath = Path.Combine(scriptsDirectory, SelectedScript);
+
+            if (!File.Exists(scriptPath))
+            {
+                ExecutionOutput = "Script file not found.";
+                return;
+            }
+
+            var tenantConfigPath = Path.Combine(documentsPath, "PowerShellRunner", "Tenants", SelectedTenant.TenantName + ".config.json");
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
@@ -108,6 +148,13 @@ namespace PowerShellRunner.ViewModels
         {
             // Save execution history to history.json
             // This is a placeholder for actual implementation
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

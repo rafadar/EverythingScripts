@@ -1,0 +1,7 @@
+{
+  "parameterMappings": {
+    "TenantParameterName1": "ScriptParameterName1",
+    "TenantParameterName2": "ScriptParameterName2",
+    "TenantParameterName3": "ScriptParameterName3"
+  }
+}

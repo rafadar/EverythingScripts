@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Z+xwPL2aKek=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rafad.aranhikkal\\OneDrive - CCS Technologies IT Pvt Ltd\\Documents\\EverythingScripts\\PowerShellRunner\\PowerShellRunner.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rafad.aranhikkal\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
