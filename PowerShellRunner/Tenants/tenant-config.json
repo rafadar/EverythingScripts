@@ -1,0 +1,8 @@
+{
+  "TenantName": "Tenant1",
+  "Parameters": {
+    "Parameter1": "Value1",
+    "Parameter2": "Value2",
+    "Parameter3": "Value3"
+  }
+}
