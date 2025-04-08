@@ -9,6 +9,7 @@ using System.ComponentModel;
 using PowerShellRunner.Utilities;
 using PowerShellRunner.Models;
 using System;
+using System.IO.Packaging;
 
 namespace PowerShellRunner.ViewModels
 {
@@ -18,6 +19,7 @@ namespace PowerShellRunner.ViewModels
         private TenantConfigModel _selectedTenant;
         private ObservableCollection<ParameterModel> _parameters;
         private string _executionOutput;
+        private ObservableCollection<string> _scripts;
 
         public string SelectedScript
         {
@@ -60,9 +62,20 @@ namespace PowerShellRunner.ViewModels
             }
         }
 
+        public ObservableCollection<string> Scripts
+        {
+            get => _scripts;
+            set
+            {
+                _scripts = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<TenantConfigModel> Tenants { get; set; }
 
         public ICommand ExecuteScriptCommand { get; }
+        public ICommand LoadParametersCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -74,6 +87,9 @@ namespace PowerShellRunner.ViewModels
 
             Parameters = new ObservableCollection<ParameterModel>();
             ExecuteScriptCommand = new RelayCommand(ExecuteScript);
+            Scripts = new ObservableCollection<string>();
+            LoadParametersCommand = new RelayCommand(LoadParameters);
+            LoadScripts();
             LoadTenants();
         }
 
@@ -87,7 +103,8 @@ namespace PowerShellRunner.ViewModels
         {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var tenantsDirectory = Path.Combine(documentsPath, "PowerShellRunner", "Tenants");
-
+        // tenantsDirectory = Path.Combine(documentsPath, "Tenants");
+        
             if (!Directory.Exists(tenantsDirectory))
             {
                 Directory.CreateDirectory(tenantsDirectory); // Create the directory if it doesn't exist
@@ -148,6 +165,18 @@ namespace PowerShellRunner.ViewModels
         {
             // Save execution history to history.json
             // This is a placeholder for actual implementation
+        }
+
+        private void LoadScripts()
+        {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var scriptsDirectory = Path.Combine(documentsPath, "PowerShellRunner", "Scripts");
+
+            if (Directory.Exists(scriptsDirectory))
+            {
+                var scriptFiles = Directory.GetFiles(scriptsDirectory, "*.ps1");
+                Scripts = new ObservableCollection<string>(scriptFiles.Select(Path.GetFileName));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

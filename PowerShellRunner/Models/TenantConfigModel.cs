@@ -6,10 +6,5 @@ namespace PowerShellRunner.Models
     {
         public string TenantName { get; set; }
         public List<ParameterModel> Parameters { get; set; }
-
-        public TenantConfigModel()
-        {
-            Parameters = new List<ParameterModel>();
-        }
     }
 }
